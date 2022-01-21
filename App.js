@@ -17,50 +17,39 @@ const App = () => {
   const apiUrl = 'https://ratings-acadio.herokuapp.com/api/v1';
 
   const WATER_IMAGE = require('./assets/rating_image/star2.png');
-  const [rating, setRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
   const [modalVisible, setModalVisible] = useState(true);
 
   const getUserData = () => {
-    fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(result => {
+    fetch(apiUrl).then(result => {
       result.json().then(resp => {
-        //resp is array
-        // console.warn('response : ',resp);
+        //user id of person we are giving data
+        const ratePerson = resp.data.userData[0];
+        //user id of our is 3
+        const user = resp.data.userData[2];
+
+        console.log('user id : ' + ratePerson.uid);
+        console.log(
+          'ratings id : ' + resp.data.userData[0].avg_rating.toFixed(1),
+        );
       });
     });
   };
 
-  function onFinishRating(rating) {
-    console.log('Rating : ' + rating);
-    setRating(rating);
+  function onFinishRating(userRating) {
+    console.log('Rating : ' + userRating);
+    setUserRating(userRating);
     setTimeout(() => {
       setModalVisible(!modalVisible);
     }, 200);
 
-<<<<<<< HEAD
-    console.log('Rating 2: ' + rating);
+    console.log('Rating 2: ' + userRating);
   }
 
-  // useEffect(getUserData());
+  useEffect(() => {
+    getUserData();
+  });
 
-=======
-    // setModalVisible(!modalVisible);
-    console.log('Rating 2: ' + rating);
-  }
-
-  // function onSwipeRating(rating){
-  //   console.log('Swipe Rating : '+rating);
-  // }
-
-  const WATER_IMAGE = require('./assets/rating_image/star2.png');
-  const [rating, setRating] = useState(0);
-  const [modalVisible, setModalVisible] = useState(true);
->>>>>>> 9ff3c70bd13f62e222c003c472ce72e9ef35065b
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -84,7 +73,7 @@ const App = () => {
               jumpValue={0.1}
               ratingBackgroundColor="grey"
               ratingTextColor="lightgreen"
-              startingValue={rating}
+              startingValue={userRating}
               tintColor="#121212"
               // onSwipeRating={onSwipeRating}
               onFinishRating={onFinishRating}
@@ -105,7 +94,7 @@ const App = () => {
         <Text style={styles.textStyle}>Show Modal</Text>
       </Pressable>
       <Text style={styles.ratingText}>Rating Of User</Text>
-      <Text style={styles.ratingText}>{rating}</Text>
+      <Text style={styles.ratingText}>{userRating}</Text>
     </View>
   );
 };

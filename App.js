@@ -42,11 +42,25 @@ const App = () => {
       setModalVisible(!modalVisible);
     }, 200);
 
+<<<<<<< HEAD
     console.log('Rating 2: ' + rating);
   }
 
   // useEffect(getUserData());
 
+=======
+    // setModalVisible(!modalVisible);
+    console.log('Rating 2: ' + rating);
+  }
+
+  // function onSwipeRating(rating){
+  //   console.log('Swipe Rating : '+rating);
+  // }
+
+  const WATER_IMAGE = require('./assets/rating_image/star2.png');
+  const [rating, setRating] = useState(0);
+  const [modalVisible, setModalVisible] = useState(true);
+>>>>>>> 9ff3c70bd13f62e222c003c472ce72e9ef35065b
   return (
     <View style={styles.centeredView}>
       <Modal

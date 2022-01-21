@@ -10,11 +10,11 @@ import React, {useState} from 'react';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 
 import {
-  
   StyleSheet,
   Text,
   Modal,
   Alert,
+  Button,
   View,
   Pressable,
 } from 'react-native';
@@ -27,7 +27,6 @@ const App = () => {
       setModalVisible(!modalVisible);
     }, 200);
 
-    
     // setModalVisible(!modalVisible);
     console.log('Rating 2: ' + rating);
   }
@@ -35,7 +34,6 @@ const App = () => {
   // function onSwipeRating(rating){
   //   console.log('Swipe Rating : '+rating);
   // }
-
 
   const WATER_IMAGE = require('./assets/rating_image/star2.png');
   const [rating, setRating] = useState(0);
@@ -73,21 +71,17 @@ const App = () => {
               imageSize={30}
               showRating
               fractions={1}
-              ratingColor='yellow'
+              ratingColor="yellow"
               jumpValue={0.1}
-              ratingBackgroundColor='grey'
-
-              ratingTextColor='lightgreen'
+              ratingBackgroundColor="grey"
+              ratingTextColor="lightgreen"
               startingValue={rating}
-              tintColor='#121212'
+              tintColor="#121212"
               // onSwipeRating={onSwipeRating}
               onFinishRating={onFinishRating}
               style={styles.ratingStyle}
             />
 
-
-           
-           
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}>
@@ -108,10 +102,10 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  ratingStyle:{
-    paddingHorizontal:89,
-    elevation:10,
-    fontSize:30
+  ratingStyle: {
+    paddingHorizontal: 89,
+    elevation: 10,
+    fontSize: 30,
     // margin:
   },
   rating_container_style: {

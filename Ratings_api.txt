@@ -1,0 +1,12 @@
+1)Get request for getting all ratings: https://ratings-acadio.herokuapp.com
+2)Post request for updating ratings : https://ratings-acadio.herokuapp.com/api/v1/
+  Body : {
+    "uid":Jene rating apvanu ceh e,
+    "obj_uid":je rating ape che e,
+    "ratings":jetlu rating apvu chee e
+}
+3) Post request for getting one user gave ratings : https://ratings-acadio.herokuapp.com/api/v1/getOne
+Body  : {
+    "uid":Jene rating apvanu ceh e,
+    "by_uid":je rating ape che e
+}

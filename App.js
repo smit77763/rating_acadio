@@ -6,20 +6,35 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 
-import {
-  
-  StyleSheet,
-  Text,
-  Modal,
-  Alert,
-  View,
-  Pressable,
-} from 'react-native';
+import {StyleSheet, Text, Modal, Alert, View, Pressable} from 'react-native';
 
 const App = () => {
+  //For the testing purpose we are user number 3 an we are rating use number 1
+
+  const apiUrl = 'https://ratings-acadio.herokuapp.com/api/v1';
+
+  const WATER_IMAGE = require('./assets/rating_image/star2.png');
+  const [rating, setRating] = useState(0);
+  const [modalVisible, setModalVisible] = useState(true);
+
+  const getUserData = () => {
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(result => {
+      result.json().then(resp => {
+        //resp is array
+        // console.warn('response : ',resp);
+      });
+    });
+  };
+
   function onFinishRating(rating) {
     console.log('Rating : ' + rating);
     setRating(rating);
@@ -27,19 +42,11 @@ const App = () => {
       setModalVisible(!modalVisible);
     }, 200);
 
-    
-    // setModalVisible(!modalVisible);
     console.log('Rating 2: ' + rating);
   }
 
-  // function onSwipeRating(rating){
-  //   console.log('Swipe Rating : '+rating);
-  // }
+  // useEffect(getUserData());
 
-
-  const WATER_IMAGE = require('./assets/rating_image/star2.png');
-  const [rating, setRating] = useState(0);
-  const [modalVisible, setModalVisible] = useState(true);
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -52,20 +59,6 @@ const App = () => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            {/* <Text style={styles.modalText}>Rate user !!</Text> */}
-            {/* <AirbnbRating
-              count={5}
-              starImage={WATER_IMAGE}
-              ratingContainerStyle={styles.rating_container_style}
-              starContainerStyle={styles.rating_star_style}
-              reviewColor="lightgreen"
-              selectedColor="yellow"
-              reviewSize={30}
-              reviews={['Very Bad', 'Bad', 'Average', 'Good', 'Excellent']}
-              defaultRating={rating}
-              onFinishRating={onFinishRating}
-              size={35}
-            /> */}
             <Rating
               type="custom"
               // ratingImage={WATER_IMAGE}
@@ -73,21 +66,17 @@ const App = () => {
               imageSize={30}
               showRating
               fractions={1}
-              ratingColor='yellow'
+              ratingColor="yellow"
               jumpValue={0.1}
-              ratingBackgroundColor='grey'
-
-              ratingTextColor='lightgreen'
+              ratingBackgroundColor="grey"
+              ratingTextColor="lightgreen"
               startingValue={rating}
-              tintColor='#121212'
+              tintColor="#121212"
               // onSwipeRating={onSwipeRating}
               onFinishRating={onFinishRating}
               style={styles.ratingStyle}
             />
 
-
-           
-           
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}>
@@ -108,10 +97,10 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  ratingStyle:{
-    paddingHorizontal:89,
-    elevation:10,
-    fontSize:30
+  ratingStyle: {
+    paddingHorizontal: 89,
+    elevation: 10,
+    fontSize: 30,
     // margin:
   },
   rating_container_style: {

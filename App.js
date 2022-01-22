@@ -19,34 +19,41 @@ const App = () => {
   const apiUrl = 'https://ratings-acadio.herokuapp.com/api/v1';
   const refRBSheet = useRef();
 
-  let avgRating;
-  const WATER_IMAGE = require('./assets/rating_image/star2.png');
+  let avgRating; //count , averagerating,
   const [userRating, setUserRating] = useState(0);
-  const [modalVisible, setModalVisible] = useState(true);
   const [averageRating, setAverageRating] = useState(0);
-  const [uid, setUid] = useState(0);
+  const [uid, setUid] = useState(1);
   const [myUid, setMyUid] = useState(3);
   const [ratingCount, setRatingCount] = useState(0);
 
   const getUserData = async () => {
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(`${apiUrl}/getOne`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: uid,
+          by_uid: myUid,
+        }),
+      });
 
       const resp = await response.json();
 
-      const ratePerson = resp.data.userData[0];
+      const ratePerson = resp.result[0]; //uid:1
+      console.log(ratePerson.count);
 
       const avgRating = ratePerson.avg_rating.toFixed(1);
 
-      setAverageRating(avgRating);
-
-      setUid(ratePerson.uid);
-
+      setAverageRating(avgRating); //
+      setUserRating(ratePerson.obj_uid[0].ratings);
       setRatingCount(ratePerson.count);
 
-      const user = resp.data.userData[2];
+      console.log('Average RAting :', averageRating);
 
-      console.log(averageRating);
+      console.log('User Ratings : ', userRating);
     } catch (e) {
       console.error('Error : ', e);
     }
@@ -55,7 +62,7 @@ const App = () => {
   const sendUpdatedRating = async () => {
     try {
       const response = await fetch(apiUrl, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -75,31 +82,33 @@ const App = () => {
   };
 
   function onFinishRating(userRating) {
-    console.log('Rating : ' + userRating);
+    // console.log('Rating : ' + userRating);
     setUserRating(userRating); //ahiya api call karvani chhe jethi update thai
 
     setTimeout(() => {
-      // setModalVisible(!modalVisible);
       refRBSheet.current.close();
+      Snackbar.show({
+        text: 'User Rating Set To ' + userRating,
+        duration: Snackbar.LENGTH_INDEFINITE,
+      });
     }, 500);
-    // sendUpdatedRating();
-    Snackbar.show({
-      text: 'User Rating Set To ' + userRating,
-      duration: Snackbar.LENGTH_LONG,
-    });
+    sendUpdatedRating();
+
     console.log('Rating 2: ' + userRating);
   }
 
   useEffect(() => {
     getUserData();
-  }, [userRating, averageRating]);
+  }, []);
   useEffect(() => {
     sendUpdatedRating();
   }, [userRating]);
 
   return (
     <View style={styles.centeredView}>
-      <Text style={styles.ratingText}>Rating Of User : {userRating}</Text>
+      <Text style={{color: 'black', alignSelf: 'center', fontSize: 20}}>
+        Rating Of User : {userRating}
+      </Text>
 
       <Pressable
         onPress={() => {
@@ -109,15 +118,13 @@ const App = () => {
           <Text style={styles.ratingText}>Id :{uid}</Text>
           <View style={styles.averageRatingView}>
             <View style={styles.left}>
-              <Text style={styles.ratingText}>
-                Average Rating : {averageRating}
-              </Text>
+              <Text style={styles.ratingText}> Average Rating :</Text>
             </View>
             <View style={styles.right}>
               <Rating
                 type="custom"
                 ratingCount={5}
-                imageSize={20}
+                imageSize={12}
                 fractions={1}
                 ratingColor="gold"
                 jumpValue={0.1}
@@ -126,8 +133,6 @@ const App = () => {
                 ratingTextColor="lightgreen"
                 startingValue={averageRating}
                 tintColor="#121212"
-                // tintColor="pink"
-                // onFinishRating={onFinishRating}
                 style={styles.ratingStyle}
               />
             </View>
@@ -137,15 +142,11 @@ const App = () => {
         </View>
       </Pressable>
 
-      {/* <Button
-        title="OPEN BOTTOM SHEET"
-        onPress={() => refRBSheet.current.open()}
-      /> */}
-
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
         animationType="fade"
+        height={150}
         closeOnPressMask={true}
         customStyles={{
           wrapper: {
@@ -160,22 +161,23 @@ const App = () => {
             backgroundColor: 'black',
           },
         }}>
-        <Rating
-          type="custom"
-          ratingCount={5}
-          imageSize={30}
-          showRating
-          fractions={1}
-          ratingColor="yellow"
-          jumpValue={0.1}
-          ratingBackgroundColor="grey"
-          ratingTextColor="lightgreen"
-          startingValue={userRating}
-          tintColor="#121212"
-          // tintColor="transparent"
-          onFinishRating={onFinishRating}
-          style={styles.ratingStyle}
-        />
+        <View style={styles.drawerRatingView}>
+          <Rating
+            type="custom"
+            ratingCount={5}
+            imageSize={23}
+            showRating
+            fractions={1}
+            ratingColor="yellow"
+            jumpValue={0.1}
+            ratingBackgroundColor="grey"
+            ratingTextColor="lightgreen"
+            startingValue={userRating}
+            tintColor="black"
+            onFinishRating={onFinishRating}
+            style={styles.ratingStyle}
+          />
+        </View>
       </RBSheet>
     </View>
   );
@@ -183,48 +185,39 @@ const App = () => {
 
 const styles = StyleSheet.create({
   cardView: {
-    backgroundColor: 'pink',
+    backgroundColor: 'black',
     padding: 10,
     borderRadius: 10.9,
-    margin: 10,
+    margin: 7,
   },
   averageRatingView: {
-    // justifyContent: 'space-between',
-    // alignContent: 'space-between',
     flexDirection: 'row',
+  },
+  drawerRatingView: {
+    flex: 0.5,
+    borderWidth: 2,
   },
   ratingStyle: {
     paddingHorizontal: 89,
-    elevation: 10,
+    // elevation: 10,
     fontSize: 30,
-    // color: 'blue',
   },
-  left: {},
+  left: {flex: 1},
   right: {
-    flex: 1,
-  },
-  rating_container_style: {
-    //  padding:10,
-    // borderColor:'red',
-    elevation: 10,
-    // borderWidth:2
-  },
-  rating_star_style: {
-    // borderColor:'blue',
-    elevation: 10,
-    padding: 10,
+    flex: 1.9,
+    borderWidth: 2,
+    // borderColor: 'white',
+    alignSelf: 'flex-end',
+    justifyContent: 'flex-end',
   },
   ratingText: {
-    fontSize: 20,
-    color: 'black',
-    // borderWidth: 2,
+    fontSize: 15,
+    color: 'white',
     alignSelf: 'flex-start',
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    // alignItems: 'center',
-    // marginTop: 22,
     backgroundColor: 'white',
   },
 

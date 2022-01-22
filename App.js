@@ -50,16 +50,12 @@ const App = () => {
       setAverageRating(avgRating); //
       setUserRating(ratePerson.obj_uid[0].ratings);
       setRatingCount(ratePerson.count);
-
-      console.log('Average RAting :', averageRating);
-
-      console.log('User Ratings : ', userRating);
     } catch (e) {
       console.error('Error : ', e);
     }
   };
 
-  const sendUpdatedRating = async () => {
+  const sendUpdatedRating = async userRating => {
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -81,28 +77,24 @@ const App = () => {
     }
   };
 
-  function onFinishRating(userRating) {
-    // console.log('Rating : ' + userRating);
-    setUserRating(userRating); //ahiya api call karvani chhe jethi update thai
-
+  function onFinishRating(userRating1) {
+    console.log('Rating1 : ' + userRating1);
+    setUserRating(userRating1);
+    console.log(userRating); //ahiya api call karvani chhe jethi update thai
     setTimeout(() => {
       refRBSheet.current.close();
       Snackbar.show({
         text: 'User Rating Set To ' + userRating,
         duration: Snackbar.LENGTH_INDEFINITE,
       });
-    }, 500);
-    sendUpdatedRating();
+    }, 2000);
 
-    console.log('Rating 2: ' + userRating);
+    sendUpdatedRating(userRating1);
   }
 
   useEffect(() => {
     getUserData();
   }, []);
-  useEffect(() => {
-    sendUpdatedRating();
-  }, [userRating]);
 
   return (
     <View style={styles.centeredView}>
@@ -206,7 +198,6 @@ const styles = StyleSheet.create({
   right: {
     flex: 1.9,
     borderWidth: 2,
-    // borderColor: 'white',
     alignSelf: 'flex-end',
     justifyContent: 'flex-end',
   },

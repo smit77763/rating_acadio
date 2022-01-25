@@ -90,6 +90,7 @@ const App = () => {
     }, 2000);
 
     sendUpdatedRating(userRating1);
+    setTimeout(getUserData, 500);
   }
 
   useEffect(() => {
@@ -191,7 +192,6 @@ const styles = StyleSheet.create({
   },
   ratingStyle: {
     paddingHorizontal: 89,
-    // elevation: 10,
     fontSize: 30,
   },
   left: {flex: 1},

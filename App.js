@@ -43,7 +43,7 @@ const App = () => {
       const resp = await response.json();
 
       const ratePerson = resp.result[0]; //uid:1
-      console.log(ratePerson.count);
+      // console.log(ratePerson.count);
 
       const avgRating = ratePerson.avg_rating.toFixed(1);
 
@@ -78,24 +78,27 @@ const App = () => {
   };
 
   function onFinishRating(userRating1) {
-    console.log('Rating1 : ' + userRating1);
-    setUserRating(userRating1);
-    console.log(userRating); //ahiya api call karvani chhe jethi update thai
+    // console.log('Rating1 : ' + userRating);
+    setTimeout(() => setUserRating(userRating1), 1000);
+    // setUserRating(userRating1);
+    // console.log('Rating2 : ' + userRating);
+    //ahiya api call karvani chhe jethi update thai
+    sendUpdatedRating(userRating1);
     setTimeout(() => {
       refRBSheet.current.close();
       Snackbar.show({
         text: 'User Rating Set To ' + userRating,
         duration: Snackbar.LENGTH_INDEFINITE,
       });
-    }, 2000);
+    }, 1000);
+    console.log(userRating);
 
-    sendUpdatedRating(userRating1);
-    setTimeout(getUserData, 500);
+    // setTimeout(getUserData, 1000);
   }
 
   useEffect(() => {
     getUserData();
-  }, []);
+  }, [userRating, averageRating, ratingCount]);
 
   return (
     <View style={styles.centeredView}>
@@ -111,7 +114,10 @@ const App = () => {
           <Text style={styles.ratingText}>Id :{uid}</Text>
           <View style={styles.averageRatingView}>
             <View style={styles.left}>
-              <Text style={styles.ratingText}> Average Rating :</Text>
+              <Text style={styles.ratingText}>
+                {' '}
+                Average Rating : {averageRating}
+              </Text>
             </View>
             <View style={styles.right}>
               <Rating
